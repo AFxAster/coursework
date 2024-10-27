@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import common.SCORPION_DEFAULT_SPEED
 
 class Scorpion(
     x: Float,
@@ -28,7 +29,12 @@ class Scorpion(
 
     private var animation: Animation<TextureRegion> = EnemyAtlas.SCORPION_MOVING_RIGHT_ANIMATION
     private var stateTime = 0f
-    private val delta = 5
+    private val delta = SCORPION_DEFAULT_SPEED
+
+    override val centerX: Float
+        get() = x + originalWidth / 2
+    override val centerY: Float
+        get() = y + originalHeight / 2
 
     override fun render(batch: SpriteBatch, x: Float, y: Float) {
         stateTime += Gdx.graphics.deltaTime

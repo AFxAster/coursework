@@ -1,8 +1,12 @@
 package model.tower
 
-import common.Texture
+import model.enemy.Enemy
 
 abstract class Tower(
     val xIndex: Int,
     val yIndex: Int,
-) : Texture
+    var radius: Float,
+    val towerTexture: TowerTexture
+) : TowerTexture by towerTexture {
+    abstract var targets: List<Enemy>
+}

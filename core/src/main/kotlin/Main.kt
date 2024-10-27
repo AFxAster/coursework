@@ -34,5 +34,6 @@ class Main : ApplicationAdapter() {
         CommonAtlas.dispose()
         TowerAtlas.dispose()
         EnemyAtlas.dispose()
+        controller.dispose()
     }
 }

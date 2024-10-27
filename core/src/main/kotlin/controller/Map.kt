@@ -14,6 +14,8 @@ import model.tile.TileState
 class Map : Texture {
     override val originalWidth: Int = ROWS_SIZE * TILE_SIZE
     override val originalHeight: Int = COLUMNS_SIZE * TILE_SIZE
+    override val centerX: Float = originalWidth / 2f
+    override val centerY: Float = originalHeight / 2f
 
     private val mapMaker = MapMaker()
     private val field: List<List<Tile>> = createField()

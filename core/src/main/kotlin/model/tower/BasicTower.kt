@@ -1,46 +1,32 @@
 package model.tower
 
-import GDXTexture
-import atlas.TowerAtlas
-import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
+import common.TILE_SIZE
+import model.enemy.Enemy
 
 class BasicTower(
-    x: Int,
-    y: Int
-) : Tower(x, y) {
+    xIndex: Int,
+    yIndex: Int,
+    radius: Float,
+    towerTexture: BasicTowerTexture
+) : Tower(xIndex, yIndex, radius, towerTexture) {
 
-    override val originalHeight: Int = 128 // Todo че то решить с оригинальной не оригинальной шириной высотой
-    override val originalWidth: Int = 64
+    override var targets: List<Enemy> =
+        emptyList() // todo если делать rxJava то можно это наблюдать и радиус, то обсервером будет текстура
+        set(value) {
+            if (value.isNotEmpty()) {
+                val firstEnemy = value.first()
+                towerTexture.rotation =
+                    Vector2(xIndex * TILE_SIZE.toFloat(), yIndex * TILE_SIZE + 40f).sub(firstEnemy.x, firstEnemy.y)
+                        .angleDeg() + 90f
+                towerTexture.playAnimation = true
+            } else {
+                towerTexture.playAnimation = false
+            }
+            field = value
+        }
 
-    private val baseTexture: GDXTexture = TowerAtlas.BASIC_TOWER_1_LVL_BASE
-    private val animation: Animation<TextureRegion> = TowerAtlas.BASIC_TOWER_1_LVL_ANIMATION
-
-    //    private val weaponTexture = atlas.MyAtlas.BASIC_TOWER_1_LVL_WEAPON
-    private var stateTime = 0f
-
-    override fun render(batch: SpriteBatch, x: Float, y: Float) {
-        stateTime += Gdx.graphics.deltaTime
-        batch.draw(
-            baseTexture,
-            x,
-            y,
-            baseTexture.width.toFloat(),
-            baseTexture.height.toFloat()
-        )
-        val weaponStateTexture = animation.getKeyFrame(stateTime)
-        batch.draw(
-            weaponStateTexture,
-            x - 16,
-            y + 24,
-            weaponStateTexture.regionWidth.toFloat(),
-            weaponStateTexture.regionHeight.toFloat()
-        )
-    }
-
-    override fun dispose() {
-
+    init {
+        towerTexture.radius = radius
     }
 }
