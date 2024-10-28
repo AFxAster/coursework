@@ -7,41 +7,43 @@ import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
+import common.TOWER_RADIUS_COLOR
 
 
 class BasicTowerTexture : TowerTexture {
 
-    override val originalHeight: Int = 128 // Todo че то решить с оригинальной не оригинальной шириной высотой
-    override val originalWidth: Int = 64
+    private val baseTexture: GDXTexture = TowerAtlas.BASIC_TOWER_BASE
+    private var radiusTexture: GDXTexture = GDXTexture(Pixmap(0, 0, Pixmap.Format.RGBA8888))
 
-    override val centerX: Float = 32f
-    override val centerY: Float = 32f
-    private val weaponCenterX = centerX
-    private val weaponCenterY = centerY + 40
+    private val animation: Animation<TextureRegion> = TowerAtlas.BASIC_TOWER_ANIMATION
+    override var playAnimation: Boolean = false
+    private var stateTime = 0f
 
-    override var rotation: Float = 0f
+    private val weaponTexture: TextureRegion = animation.keyFrames[0]
+
+    override val originalWidth: Int = baseTexture.height
+    override val originalHeight: Int =
+        baseTexture.height // Todo че то решить с оригинальной не оригинальной шириной высотой
+
+    override val textureCenterY = 32f
+    override val textureCenterX = 32f
+
+    override val weaponCenterX = textureCenterX
+    override val weaponCenterY = textureCenterY + 40
+
+
+    private var rotation: Float = 0f
     var radius: Float = 0f
         set(radius) {
             val pixmap = Pixmap((radius * 2).toInt(), (radius * 2).toInt(), Pixmap.Format.RGBA8888)
-            pixmap.setColor(40 / 255f, 210 / 255f, 255 / 255f, 0.40f)
+            pixmap.setColor(TOWER_RADIUS_COLOR)
             pixmap.fillCircle(radius.toInt(), radius.toInt(), radius.toInt())
             radiusTexture = GDXTexture(pixmap)
             field = radius
         }
-    override var showRadius: Boolean = false
-
-
-    private val baseTexture: GDXTexture = TowerAtlas.BASIC_TOWER_1_LVL_BASE
-    private val animation: Animation<TextureRegion> = TowerAtlas.BASIC_TOWER_1_LVL_ANIMATION
-    override var playAnimation: Boolean = false
-    private val weaponTexture = animation.keyFrames[0]
-    private var radiusTexture: GDXTexture = GDXTexture(Pixmap(0, 0, Pixmap.Format.RGBA8888))
-
-    private var stateTime = 0f
 
     override fun render(batch: SpriteBatch, x: Float, y: Float) {
-
-        if (showRadius) batch.draw(radiusTexture, x + centerX - radius, y + centerY - radius)
         batch.draw(baseTexture, x, y)
 
         val weaponStateTexture: TextureRegion
@@ -56,14 +58,22 @@ class BasicTowerTexture : TowerTexture {
             weaponStateTexture,
             x - 16,
             y + 24,
-            16 + 32f,
-            72 - 24f,
+            48f,
+            48f,
             weaponStateTexture.regionWidth.toFloat(),
             weaponStateTexture.regionHeight.toFloat(),
             1f,
             1f,
             rotation
         )
+    }
+
+    override fun renderRadius(batch: SpriteBatch, x: Float, y: Float) {
+        batch.draw(radiusTexture, x + textureCenterX - radius, y + textureCenterY - radius)
+    }
+
+    override fun rotateTo(x: Float, y: Float) {
+        rotation = Vector2(x, y).angleDeg() - 90
     }
 
     override fun dispose() {

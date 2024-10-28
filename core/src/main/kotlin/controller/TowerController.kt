@@ -6,31 +6,38 @@ import model.enemy.Enemy
 import model.tower.Tower
 
 class TowerController(
-    private val enemyController: EnemyController
+    private val enemyController: EnemyController,
+    private val projectileController: ProjectileController
 ) {
     private val towers: MutableList<Tower> = mutableListOf()
+    private var selectedTower: Tower? = null
 
     fun addTower(tower: Tower) {
         towers.addSorted(tower)
     }
 
     fun render(batch: SpriteBatch) {
+        selectedTower?.let {
+            it.texture.renderRadius(batch, it.x, it.y)
+        }
         towers.forEach {
             it.targets = getTargetsTo(it)
-            it.render(batch, it.xIndex * TILE_SIZE.toFloat(), it.yIndex * TILE_SIZE.toFloat())
+            it.startAttack(projectileController)
+            it.render(batch, it.x, it.y)
         }
+        projectileController.render(batch)
     }
 
-    fun showRadiusOn(xIndex: Int, yIndex: Int) {
-        towers.find { it.xIndex == xIndex && it.yIndex == yIndex }?.showRadius = true
+    fun selectTower(xIndex: Int, yIndex: Int) {
+        selectedTower = towers.find { it.x == xIndex * TILE_SIZE.toFloat() && it.y == yIndex * TILE_SIZE.toFloat() }
     }
 
-    fun hideRadii() {
-        towers.forEach { it.showRadius = false }
+    fun removeSelect() {
+        selectedTower = null
     }
 
     private fun getTargetsTo(tower: Tower): List<Enemy> = tower.run {
-        enemyController.getEnemiesInRadius(xIndex * TILE_SIZE + centerX, yIndex * TILE_SIZE + centerY, radius)
+        enemyController.getEnemiesInRadius(x + textureCenterX, y + textureCenterY, radius)
     }
 
     fun dispose() {
@@ -40,5 +47,5 @@ class TowerController(
 
 private fun MutableList<Tower>.addSorted(tower: Tower) {
     add(tower)
-    sortByDescending { it.yIndex }
+    sortByDescending { it.y }
 }

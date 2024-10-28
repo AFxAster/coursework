@@ -1,5 +1,6 @@
 import atlas.CommonAtlas
 import atlas.EnemyAtlas
+import atlas.ProjectileAtlas
 import atlas.TowerAtlas
 import com.badlogic.gdx.ApplicationAdapter
 import com.badlogic.gdx.Gdx
@@ -17,6 +18,7 @@ class Main : ApplicationAdapter() {
         super.create()
         TowerAtlas.init()
         EnemyAtlas.init()
+        ProjectileAtlas.init()
         Gdx.input.inputProcessor = InputAdapterImpl(controller)
     }
 
@@ -34,6 +36,7 @@ class Main : ApplicationAdapter() {
         CommonAtlas.dispose()
         TowerAtlas.dispose()
         EnemyAtlas.dispose()
+        ProjectileAtlas.dispose()
         controller.dispose()
     }
 }

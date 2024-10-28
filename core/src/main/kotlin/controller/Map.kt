@@ -14,8 +14,8 @@ import model.tile.TileState
 class Map : Texture {
     override val originalWidth: Int = ROWS_SIZE * TILE_SIZE
     override val originalHeight: Int = COLUMNS_SIZE * TILE_SIZE
-    override val centerX: Float = originalWidth / 2f
-    override val centerY: Float = originalHeight / 2f
+    override val textureCenterX: Float = originalWidth / 2f
+    override val textureCenterY: Float = originalHeight / 2f
 
     private val mapMaker = MapMaker()
     private val field: List<List<Tile>> = createField()
@@ -34,12 +34,12 @@ class Map : Texture {
         }
     }
 
-    fun getTile(x: Int, y: Int): Tile {
-        return field[x / CommonAtlas.TILE.width][y / CommonAtlas.TILE.height]
+    fun getTile(x: Float, y: Float): Tile {
+        return field[x.toInt() / CommonAtlas.TILE.width][y.toInt() / CommonAtlas.TILE.height]
     }
 
     fun getDirectionOnPath(x: Float, y: Float): Direction {
-        val tile = getTile(x.toInt(), y.toInt())
+        val tile = getTile(x, y)
         return mapMaker.directionList.find {
             it.first.x.toInt() == tile.xIndex && it.first.y.toInt() == tile.yIndex
         }?.second!!

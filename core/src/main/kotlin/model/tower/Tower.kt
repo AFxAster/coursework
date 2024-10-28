@@ -1,12 +1,16 @@
 package model.tower
 
+import controller.ProjectileController
 import model.enemy.Enemy
 
 abstract class Tower(
-    val xIndex: Int,
-    val yIndex: Int,
+    val x: Float,
+    val y: Float,
     var radius: Float,
-    val towerTexture: TowerTexture
-) : TowerTexture by towerTexture {
+    var attackSpeed: Float,
+    val texture: TowerTexture
+) : TowerTexture by texture {
     abstract var targets: List<Enemy>
+
+    abstract fun startAttack(projectileController: ProjectileController)
 }

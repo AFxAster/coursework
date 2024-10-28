@@ -22,6 +22,7 @@ class Launcher {
             useVsync(true)
             setForegroundFPS(Lwjgl3ApplicationConfiguration.getDisplayMode().refreshRate + 1)
             setWindowedMode(SCREEN_WIDTH, SCREEN_HEIGHT)
+            setResizable(false)
             setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png")
         }
     }
