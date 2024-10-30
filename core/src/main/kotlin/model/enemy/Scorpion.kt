@@ -1,60 +1,33 @@
 package model.enemy
 
-import atlas.EnemyAtlas
 import com.badlogic.gdx.Gdx
-import com.badlogic.gdx.graphics.g2d.Animation
-import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.graphics.g2d.TextureRegion
 import common.RENDER_TIME
+import common.SCORPION_DEFAULT_DAMAGE
+import common.SCORPION_DEFAULT_MAX_HEALTH
+import common.SCORPION_DEFAULT_SPEED
 import controller.Map
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class Scorpion( // todo ScorpionTexture пора бы скрафтить
+class Scorpion(
     x: Float,
     y: Float,
-    speed: Float,
-    direction: Direction
-) : Enemy(x, y, speed, direction) {
+    // todo не в конструктор отдавать, а в полях инитить дефолтным значением, потому что в конструктор всегда буду передавать дефолтную константу
+    texture: ScorpionTexture
+) : Enemy(x, y, texture) {
 
-
-
-    override var direction: Direction = direction
+    override val maxHealth: Float = SCORPION_DEFAULT_MAX_HEALTH
+    override var health: Float = maxHealth
         set(value) {
-            animation = when (value) {
-                is Direction.Left -> EnemyAtlas.SCORPION_MOVING_LEFT_ANIMATION
-                is Direction.Right -> EnemyAtlas.SCORPION_MOVING_RIGHT_ANIMATION
-                is Direction.Up -> EnemyAtlas.SCORPION_MOVING_UP_ANIMATION
-                is Direction.Down -> EnemyAtlas.SCORPION_MOVING_DOWN_ANIMATION
-            }
+            texture.healthBar.status = value / maxHealth
             field = value
         }
+    override var speed: Float = SCORPION_DEFAULT_SPEED
+    override var damage: Float = SCORPION_DEFAULT_DAMAGE
 
-    private var animation: Animation<TextureRegion> = EnemyAtlas.SCORPION_MOVING_RIGHT_ANIMATION
-
-    override val originalWidth: Int = animation.keyFrames[0].regionWidth
-    override val originalHeight: Int = animation.keyFrames[0].regionHeight
-
-    private var stateTime = 0f
-
-    override val textureCenterX = originalWidth / 2f
-    override val textureCenterY = originalHeight / 2f
-
-    override fun render(batch: SpriteBatch, x: Float, y: Float) {
-        stateTime += Gdx.graphics.deltaTime
-        val scorpionStateTexture = animation.getKeyFrame(stateTime)
-        batch.draw(
-            scorpionStateTexture,
-            x,
-            y,
-            scorpionStateTexture.regionWidth.toFloat(),
-            scorpionStateTexture.regionHeight.toFloat()
-        )
-    }
-
-    override fun startMove(map: Map) {
+    override fun startMoving(map: Map) {
         movingJob = CoroutineScope(Dispatchers.Default).launch {
             // todo пока жив еще наверное, если при смерти ОТМЕНЯТЬ эту корутину, то когда убираю этого крипа нужно
             //  добавить проверку что именно отменена корутина была, а не завершена
@@ -63,7 +36,11 @@ class Scorpion( // todo ScorpionTexture пора бы скрафтить
                 moveTo(direction)
                 delay(RENDER_TIME)
             }
-            dispose()
+            health = 0f
+            map.base.health -= damage
+            Gdx.app.postRunnable {
+                dispose()
+            }
         }
     }
 
@@ -92,5 +69,7 @@ class Scorpion( // todo ScorpionTexture пора бы скрафтить
         }
     }
 
-    override fun dispose() {}
+    override fun dispose() {
+        texture.dispose()
+    }
 }

@@ -7,7 +7,8 @@ import model.enemy.Enemy
 abstract class Projectile(
     var x: Float,
     var y: Float,
-    val target: Enemy?,
+    val damage: Float,
+    val target: Enemy,
     val texture: ProjectileTexture
 ) : ProjectileTexture by texture {
 
@@ -15,7 +16,11 @@ abstract class Projectile(
         get() = x + texture.textureCenterX
     val centerY: Float
         get() = y + texture.textureCenterY
-    var movingJob: Job? = null
+    var isActive = true
+    protected var movingJob: Job? = null
 
-    protected abstract fun startMove()
+    protected abstract fun startMoving()
+    fun stopMoving() {
+        movingJob?.cancel()
+    }
 }

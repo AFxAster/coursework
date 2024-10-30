@@ -22,10 +22,13 @@ class TowerController(
         }
         towers.forEach {
             it.targets = getTargetsTo(it)
-            it.startAttack(projectileController)
+            it.startAttacking(projectileController)
             it.render(batch, it.x, it.y)
         }
-        projectileController.render(batch)
+    }
+
+    fun stopAttacking() {
+        towers.forEach { it.stopAttacking() }
     }
 
     fun selectTower(xIndex: Int, yIndex: Int) {

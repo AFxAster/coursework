@@ -1,16 +1,23 @@
 package model.tower
 
 import controller.ProjectileController
+import kotlinx.coroutines.Job
 import model.enemy.Enemy
 
 abstract class Tower(
     val x: Float,
     val y: Float,
-    var radius: Float,
-    var attackSpeed: Float,
     val texture: TowerTexture
 ) : TowerTexture by texture {
-    abstract var targets: List<Enemy>
+    open var targets: List<Enemy> = emptyList()
 
-    abstract fun startAttack(projectileController: ProjectileController)
+    abstract var radius: Float
+    abstract var attackSpeed: Float
+    abstract var damage: Float
+    protected var attackJob: Job? = null
+
+    abstract fun startAttacking(projectileController: ProjectileController)
+    fun stopAttacking() {
+        attackJob?.cancel()
+    }
 }

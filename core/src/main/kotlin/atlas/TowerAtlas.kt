@@ -5,7 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.TextureAtlas
 import com.badlogic.gdx.graphics.g2d.TextureRegion
-import common.BASIC_TOWER_ATTACK_SPEED
+import common.BASIC_TOWER_DEFAULT_ATTACK_SPEED
 
 object TowerAtlas { // todo или статику сделать?)
 
@@ -17,7 +17,7 @@ object TowerAtlas { // todo или статику сделать?)
     fun init() {
         val basicTower1LvlAtlas = TextureAtlas(Gdx.files.internal("assets/basictower/1_lvl/basic_tower_1_lvl.atlas"))
 
-        val frameDuration = 1 / BASIC_TOWER_ATTACK_SPEED / BASIC_TOWER_FRAME_NUMBER
+        val frameDuration = 1 / BASIC_TOWER_DEFAULT_ATTACK_SPEED / BASIC_TOWER_FRAME_NUMBER
         BASIC_TOWER_ANIMATION =
             Animation(frameDuration, basicTower1LvlAtlas.findRegions("weapon"), Animation.PlayMode.LOOP)
     }

@@ -25,7 +25,6 @@ class Main : ApplicationAdapter() {
     override fun render() {
         ScreenUtils.clear(0f, 0f, 0f, 1f)
         batch.begin()
-        controller.renderMap(batch)
         controller.render(batch)
         batch.end()
 

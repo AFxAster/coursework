@@ -1,7 +1,7 @@
 package model.projectile
 
 import com.badlogic.gdx.math.Vector2
-import common.ARROW_SPEED
+import common.ARROW_DEFAULT_SPEED
 import common.RENDER_TIME
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -13,35 +13,39 @@ import kotlin.math.abs
 class Arrow(
     x: Float,
     y: Float,
+    damage: Float,
     target: Enemy, // todo если используется только в startMove() то перенести в параметр метода
     texture: ArrowTexture
-) : Projectile(x, y, target, texture) {
-    val firstPoint = Vector2()
+) : Projectile(x, y, damage, target, texture) {
+//    val firstPoint = Vector2(
+//        x + textureCenterX,
+//        y + originalHeight
+//    ) // todo возможно вращение нужно уже делать от этой точки а не от центра
 
-    //    override fun dispose() {
-//        texture.dispose()
-//        movingJob?.cancel()
-//    }
 
     init {
-        startMove()
+        startMoving()
     }
 
-    override fun startMove() {
+    override fun startMoving() {
         movingJob = CoroutineScope(Dispatchers.Default).launch {
-            var currentTarget = target ?: return@launch
-            var targetX = currentTarget.centerX
-            var targetY = currentTarget.centerY
-            while (abs(targetY - centerY) + abs(targetX - centerX) > 10) {
-                val direction = Vector2(targetX, targetY).sub(centerX, centerY).nor().scl(ARROW_SPEED)
+            var targetX = target.centerX
+            var targetY = target.centerY
+            while (target.isAlive && abs(targetY - centerY) + abs(targetX - centerX) > 10) {
+                val direction = Vector2(targetX, targetY).sub(centerX, centerY)
+//                firstPoint.rotateAroundDeg(Vector2(centerX, centerY), direction.angleDeg() + 180) // todo
+                direction.nor().scl(ARROW_DEFAULT_SPEED)
                 x += direction.x
                 y += direction.y
+//                firstPoint.add(direction)
                 delay(RENDER_TIME)
-                currentTarget =
-                    target // todo почекать как все выглядит если сократить до считывания поля прямо из target
-                targetX = currentTarget.centerX
-                targetY = currentTarget.centerY
+                // todo почекать как все выглядит если сократить до считывания поля прямо из target
+                targetX = target.centerX
+                targetY = target.centerY
             }
+            this@Arrow.isActive = false
+            target.health -= damage // todo может использовать атомарные, потокобезопасные струкутуры
+            println("end of moving $targetX $targetY")
             // todo dispose() вызывать или нет???
         }
     }

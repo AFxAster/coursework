@@ -1,16 +1,19 @@
 package model.enemy
 
 import com.badlogic.gdx.math.Vector2
-import common.Texture
 import controller.Map
 import kotlinx.coroutines.Job
 
 abstract class Enemy(
     var x: Float, // todo на Vector2 поменять??
     var y: Float,
-    var speed: Float,
-    open var direction: Direction
-) : Texture {
+    val texture: EnemyTexture
+) : EnemyTexture by texture {
+
+    abstract val maxHealth: Float
+    abstract var health: Float
+    abstract var speed: Float
+    abstract var damage: Float
 
     val centerX: Float
         get() = x + textureCenterX
@@ -18,9 +21,15 @@ abstract class Enemy(
         get() = y + textureCenterY
 
     val lastPoint = Vector2(x, y)
-    var isAlive = true
-    var movingJob: Job? = null
+    val isAlive: Boolean
+        get() = health > 0
+    protected var movingJob: Job? = null
 
     protected abstract fun moveTo(direction: Direction)
-    abstract fun startMove(map: Map)
+
+    abstract fun startMoving(map: Map)
+
+    fun stopMoving() {
+        movingJob?.cancel()
+    }
 }

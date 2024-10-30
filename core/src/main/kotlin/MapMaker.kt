@@ -4,7 +4,7 @@ import common.ROWS_SIZE
 import model.enemy.Direction
 import java.util.*
 
-class MapMaker { //todo переделать это говно
+class MapMaker { // todo переделать это говно
     var matrix: Array<IntArray> = generateMap(ROWS_SIZE, COLUMNS_SIZE)
     val pathTiles: List<Vector2> = createPathTiles()
     val directionList: List<Pair<Vector2, Direction>> = createDirectionList()

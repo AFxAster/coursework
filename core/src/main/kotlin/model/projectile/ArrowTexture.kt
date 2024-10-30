@@ -16,7 +16,7 @@ class ArrowTexture : ProjectileTexture {
     override val textureCenterX: Float = originalWidth / 2f
     override val textureCenterY: Float = originalHeight / 2f
 
-    var rotation: Float = 0f
+    private var rotation: Float = 0f
 
     private var stateTime = 0f
 

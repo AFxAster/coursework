@@ -7,11 +7,14 @@ import common.COLUMNS_SIZE
 import common.ROWS_SIZE
 import common.TILE_SIZE
 import common.Texture
+import model.base.Base
 import model.enemy.Direction
 import model.tile.Tile
 import model.tile.TileState
 
-class Map : Texture {
+class Map(
+    val base: Base
+) : Texture {
     override val originalWidth: Int = ROWS_SIZE * TILE_SIZE
     override val originalHeight: Int = COLUMNS_SIZE * TILE_SIZE
     override val textureCenterX: Float = originalWidth / 2f
@@ -28,10 +31,15 @@ class Map : Texture {
         }
     }
 
+    fun renderHealthBar(batch: SpriteBatch, x: Float, y: Float) {
+        base.render(batch, x, y)
+    }
+
     override fun dispose() {
         field.forEach { row ->
             row.forEach { it.dispose() } // todo может достаточно одну текстуру освободить чем в каждой клетке
         }
+        base.dispose()
     }
 
     fun getTile(x: Float, y: Float): Tile {

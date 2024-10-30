@@ -14,18 +14,19 @@ class ProjectileController {
     fun render(batch: SpriteBatch) {
         update()
         projectiles.forEach {
-            if (it.target == null) return
-            val direction = Vector2(it.target.centerX, it.target.centerY).sub(
-                it.x + it.texture.textureCenterX,
-                it.y + it.texture.textureCenterY
-            )
+            val direction = Vector2(it.target.centerX, it.target.centerY).sub(it.centerX, it.centerY)
             it.rotateTo(direction.x, direction.y)
             it.render(batch, it.x, it.y)
         }
+//        println(projectiles)
     }
 
     private fun update() {
-        projectiles.removeAll { it.movingJob!!.isCompleted }
+        projectiles.removeAll { !it.isActive }
+    }
+
+    fun stopMoving() {
+        projectiles.forEach { it.stopMoving() }
     }
 
     fun dispose() {

@@ -11,7 +11,7 @@ class EnemyController(
 
     fun addEnemy(enemy: Enemy) {
         enemies.add(enemy)
-        enemy.startMove(map)
+        enemy.startMoving(map)
     }
 
     fun getEnemiesInRadius(centerX: Float, centerY: Float, radius: Float): List<Enemy> {
@@ -24,14 +24,19 @@ class EnemyController(
         return appropriateEnemies
     }
 
-    private fun update() {
-        enemies.removeAll { it.movingJob!!.isCompleted }
-    }
-
     fun render(batch: SpriteBatch) {
         update()
         enemies.forEach {
             it.render(batch, it.x, it.y)
         }
     }
+
+    private fun update() {
+        enemies.removeAll { !it.isAlive }
+    }
+
+    fun stopMoving() {
+        enemies.forEach { it.stopMoving() }
+    }
+
 }
