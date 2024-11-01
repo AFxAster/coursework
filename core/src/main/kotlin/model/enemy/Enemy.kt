@@ -5,24 +5,21 @@ import controller.Map
 import kotlinx.coroutines.Job
 
 abstract class Enemy(
-    var x: Float, // todo на Vector2 поменять??
-    var y: Float,
+    val coordinates: Vector2,
     val texture: EnemyTexture
 ) : EnemyTexture by texture {
 
-    abstract val maxHealth: Float
-    abstract var health: Float
+    abstract val maxHp: Float
+    abstract var hp: Float
     abstract var speed: Float
     abstract var damage: Float
 
-    val centerX: Float
-        get() = x + textureCenterX
-    val centerY: Float
-        get() = y + textureCenterY
+    val center: Vector2
+        get() = Vector2(coordinates.x + textureCenter.x, coordinates.y + textureCenter.y)
 
-    val lastPoint = Vector2(x, y)
+    val lastPoint = Vector2(coordinates)
     val isAlive: Boolean
-        get() = health > 0
+        get() = hp > 0
     protected var movingJob: Job? = null
 
     protected abstract fun moveTo(direction: Direction)

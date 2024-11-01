@@ -5,6 +5,7 @@ import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.Animation
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.graphics.g2d.TextureRegion
+import com.badlogic.gdx.math.Vector2
 
 class ScorpionTexture(
     direction: Direction
@@ -14,8 +15,7 @@ class ScorpionTexture(
     private var animation: Animation<TextureRegion> = EnemyAtlas.SCORPION_MOVING_RIGHT_ANIMATION
     override val originalWidth: Int = animation.keyFrames[0].regionWidth
     override val originalHeight: Int = animation.keyFrames[0].regionHeight
-    override val textureCenterX = originalWidth / 2f
-    override val textureCenterY = originalHeight / 2f
+    override val textureCenter = Vector2(originalWidth / 2f, originalHeight / 2f)
 
     override var direction: Direction = direction
         set(value) {
@@ -33,17 +33,20 @@ class ScorpionTexture(
         this.direction = direction
     }
 
-    override fun render(batch: SpriteBatch, x: Float, y: Float) {
+    override fun render(batch: SpriteBatch, coordinates: Vector2) {
         stateTime += Gdx.graphics.deltaTime
         val scorpionStateTexture = animation.getKeyFrame(stateTime)
         batch.draw(
             scorpionStateTexture,
-            x,
-            y,
+            coordinates.x,
+            coordinates.y,
             scorpionStateTexture.regionWidth.toFloat(),
             scorpionStateTexture.regionHeight.toFloat()
         )
-        healthBar.render(batch, x + (originalWidth - healthBar.originalWidth) / 2f, y + originalHeight)
+        healthBar.render(
+            batch,
+            Vector2(coordinates.x + (originalWidth - healthBar.originalWidth) / 2f, coordinates.y + originalHeight)
+        )
     }
 
     override fun dispose() {

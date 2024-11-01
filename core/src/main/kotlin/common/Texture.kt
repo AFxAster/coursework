@@ -1,12 +1,12 @@
 package common
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Vector2
 
 interface Texture {
     val originalWidth: Int
     val originalHeight: Int
-    val textureCenterX: Float
-    val textureCenterY: Float
-    fun render(batch: SpriteBatch, x: Float, y: Float)
+    val textureCenter: Vector2
+    fun render(batch: SpriteBatch, coordinates: Vector2)
     fun dispose()
 }

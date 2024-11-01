@@ -1,23 +1,21 @@
 package controller
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Vector2
 import model.enemy.Enemy
 import kotlin.math.pow
 
-class EnemyController(
-    private val map: Map
-) {
+class EnemyController {
     private val enemies: MutableList<Enemy> = mutableListOf()
 
     fun addEnemy(enemy: Enemy) {
         enemies.add(enemy)
-        enemy.startMoving(map)
     }
 
-    fun getEnemiesInRadius(centerX: Float, centerY: Float, radius: Float): List<Enemy> {
+    fun getEnemiesInRadius(center: Vector2, radius: Float): List<Enemy> {
         val appropriateEnemies = mutableListOf<Enemy>()
         enemies.forEach {
-            if ((it.centerX - centerX).pow(2) + (it.centerY - centerY).pow(2) <= radius.pow(2)) {
+            if ((it.center.x - center.x).pow(2) + (it.center.y - center.y).pow(2) <= radius.pow(2)) {
                 appropriateEnemies.add(it)
             }
         }
@@ -27,7 +25,7 @@ class EnemyController(
     fun render(batch: SpriteBatch) {
         update()
         enemies.forEach {
-            it.render(batch, it.x, it.y)
+            it.render(batch, it.coordinates)
         }
     }
 

@@ -1,9 +1,10 @@
 package model.enemy
 
 import com.badlogic.gdx.Gdx
+import com.badlogic.gdx.math.Vector2
 import common.RENDER_TIME
 import common.SCORPION_DEFAULT_DAMAGE
-import common.SCORPION_DEFAULT_MAX_HEALTH
+import common.SCORPION_DEFAULT_MAX_HP
 import common.SCORPION_DEFAULT_SPEED
 import controller.Map
 import kotlinx.coroutines.CoroutineScope
@@ -12,16 +13,17 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 class Scorpion(
-    x: Float,
-    y: Float,
-    // todo не в конструктор отдавать, а в полях инитить дефолтным значением, потому что в конструктор всегда буду передавать дефолтную константу
+    coordinates: Vector2,
     texture: ScorpionTexture
-) : Enemy(x, y, texture) {
+) : Enemy(coordinates, texture) {
 
-    override val maxHealth: Float = SCORPION_DEFAULT_MAX_HEALTH
-    override var health: Float = maxHealth
+    override val maxHp: Float = SCORPION_DEFAULT_MAX_HP
+    override var hp: Float = maxHp
         set(value) {
-            texture.healthBar.status = value / maxHealth
+            if (value <= 0)
+                movingJob?.cancel()
+
+            texture.healthBar.status = value / maxHp
             field = value
         }
     override var speed: Float = SCORPION_DEFAULT_SPEED
@@ -29,14 +31,13 @@ class Scorpion(
 
     override fun startMoving(map: Map) {
         movingJob = CoroutineScope(Dispatchers.Default).launch {
-            // todo пока жив еще наверное, если при смерти ОТМЕНЯТЬ эту корутину, то когда убираю этого крипа нужно
-            //  добавить проверку что именно отменена корутина была, а не завершена
-            while (0 <= lastPoint.x && lastPoint.x < Gdx.graphics.width && 0 <= lastPoint.y && lastPoint.y < Gdx.graphics.height) {
-                val direction = map.getDirectionOnPath(lastPoint.x, lastPoint.y)
+            // todo еще стоит это условие цикла вынести в мапу
+            while (lastPoint.x < Gdx.graphics.width && lastPoint.y < Gdx.graphics.height) {
+                val direction = map.getDirectionOnPath(lastPoint)
                 moveTo(direction)
                 delay(RENDER_TIME)
             }
-            health = 0f
+            hp = 0f
             map.base.health -= damage
             Gdx.app.postRunnable {
                 dispose()
@@ -48,23 +49,23 @@ class Scorpion(
         this.direction = direction
         when (direction) {
             is Direction.Left -> {
-                x -= speed
-                lastPoint.x = x + originalWidth
+                coordinates.x -= speed
+                lastPoint.x = coordinates.x + originalWidth
             }
 
             is Direction.Right -> {
-                x += speed
-                lastPoint.x = x
+                coordinates.x += speed
+                lastPoint.x = coordinates.x
             }
 
             is Direction.Up -> {
-                y += speed
-                lastPoint.y = y
+                coordinates.y += speed
+                lastPoint.y = coordinates.y
             }
 
             is Direction.Down -> {
-                y -= speed
-                lastPoint.y = y + originalHeight
+                coordinates.y -= speed
+                lastPoint.y = coordinates.y + originalHeight
             }
         }
     }

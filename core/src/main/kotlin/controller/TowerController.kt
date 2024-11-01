@@ -2,6 +2,7 @@ package controller
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import common.TILE_SIZE
+import common.plus
 import model.enemy.Enemy
 import model.tower.Tower
 
@@ -18,12 +19,12 @@ class TowerController(
 
     fun render(batch: SpriteBatch) {
         selectedTower?.let {
-            it.texture.renderRadius(batch, it.x, it.y)
+            it.texture.renderRadius(batch, it.coordinates)
         }
         towers.forEach {
             it.targets = getTargetsTo(it)
             it.startAttacking(projectileController)
-            it.render(batch, it.x, it.y)
+            it.render(batch, it.coordinates)
         }
     }
 
@@ -32,7 +33,8 @@ class TowerController(
     }
 
     fun selectTower(xIndex: Int, yIndex: Int) {
-        selectedTower = towers.find { it.x == xIndex * TILE_SIZE.toFloat() && it.y == yIndex * TILE_SIZE.toFloat() }
+        selectedTower =
+            towers.find { it.coordinates.x == xIndex * TILE_SIZE.toFloat() && it.coordinates.y == yIndex * TILE_SIZE.toFloat() }
     }
 
     fun removeSelect() {
@@ -40,7 +42,7 @@ class TowerController(
     }
 
     private fun getTargetsTo(tower: Tower): List<Enemy> = tower.run {
-        enemyController.getEnemiesInRadius(x + textureCenterX, y + textureCenterY, radius)
+        enemyController.getEnemiesInRadius(coordinates + textureCenter, radius)
     }
 
     fun dispose() {
@@ -50,5 +52,5 @@ class TowerController(
 
 private fun MutableList<Tower>.addSorted(tower: Tower) {
     add(tower)
-    sortByDescending { it.y }
+    sortByDescending { it.coordinates.y }
 }

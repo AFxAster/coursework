@@ -26,11 +26,9 @@ class BasicTowerTexture : TowerTexture {
     override val originalHeight: Int =
         baseTexture.height // Todo че то решить с оригинальной не оригинальной шириной высотой
 
-    override val textureCenterY = 32f
-    override val textureCenterX = 32f
+    override val textureCenter = Vector2(32f, 32f)
 
-    override val weaponCenterX = textureCenterX
-    override val weaponCenterY = textureCenterY + 40
+    override val weaponCenter = Vector2(textureCenter.x, textureCenter.y + 40)
 
 
     private var rotation: Float = 0f
@@ -43,8 +41,8 @@ class BasicTowerTexture : TowerTexture {
             field = radius
         }
 
-    override fun render(batch: SpriteBatch, x: Float, y: Float) {
-        batch.draw(baseTexture, x, y)
+    override fun render(batch: SpriteBatch, coordinates: Vector2) {
+        batch.draw(baseTexture, coordinates.x, coordinates.y)
 
         val weaponStateTexture: TextureRegion
         if (playAnimation) {
@@ -56,8 +54,8 @@ class BasicTowerTexture : TowerTexture {
         }
         batch.draw(
             weaponStateTexture,
-            x - 16,
-            y + 24,
+            coordinates.x - 16,
+            coordinates.y + 24,
             48f,
             48f,
             weaponStateTexture.regionWidth.toFloat(),
@@ -68,12 +66,12 @@ class BasicTowerTexture : TowerTexture {
         )
     }
 
-    override fun renderRadius(batch: SpriteBatch, x: Float, y: Float) {
-        batch.draw(radiusTexture, x + textureCenterX - radius, y + textureCenterY - radius)
+    override fun renderRadius(batch: SpriteBatch, coordinates: Vector2) {
+        batch.draw(radiusTexture, coordinates.x + textureCenter.x - radius, coordinates.y + textureCenter.y - radius)
     }
 
-    override fun rotateTo(x: Float, y: Float) {
-        rotation = Vector2(x, y).angleDeg() - 90
+    override fun rotateTo(to: Vector2) {
+        rotation = to.angleDeg() - 90
     }
 
     override fun dispose() {

@@ -1,7 +1,7 @@
 package controller
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
-import com.badlogic.gdx.math.Vector2
+import common.minus
 import model.projectile.Projectile
 
 class ProjectileController {
@@ -14,9 +14,10 @@ class ProjectileController {
     fun render(batch: SpriteBatch) {
         update()
         projectiles.forEach {
-            val direction = Vector2(it.target.centerX, it.target.centerY).sub(it.centerX, it.centerY)
-            it.rotateTo(direction.x, direction.y)
-            it.render(batch, it.x, it.y)
+//            val direction = Vector2(it.target.centerX, it.target.centerY).sub(it.centerX, it.centerY)
+            val direction = it.target.center - it.center
+            it.rotateTo(direction)
+            it.render(batch, it.coordinates)
         }
 //        println(projectiles)
     }

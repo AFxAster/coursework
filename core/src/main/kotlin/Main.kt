@@ -20,6 +20,7 @@ class Main : ApplicationAdapter() {
         EnemyAtlas.init()
         ProjectileAtlas.init()
         Gdx.input.inputProcessor = InputAdapterImpl(controller)
+        controller.startWaves()
     }
 
     override fun render() {

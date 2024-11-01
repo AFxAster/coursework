@@ -1,8 +1,8 @@
 package controller
 
 import MapMaker
-import atlas.CommonAtlas
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
+import com.badlogic.gdx.math.Vector2
 import common.COLUMNS_SIZE
 import common.ROWS_SIZE
 import common.TILE_SIZE
@@ -17,22 +17,22 @@ class Map(
 ) : Texture {
     override val originalWidth: Int = ROWS_SIZE * TILE_SIZE
     override val originalHeight: Int = COLUMNS_SIZE * TILE_SIZE
-    override val textureCenterX: Float = originalWidth / 2f
-    override val textureCenterY: Float = originalHeight / 2f
+    override val textureCenter = Vector2(originalWidth / 2f, originalHeight / 2f)
 
     private val mapMaker = MapMaker()
     private val field: List<List<Tile>> = createField()
+    val firstPathCoords: Vector2 = mapMaker.firstPathCoords
 
-    override fun render(batch: SpriteBatch, x: Float, y: Float) {
+    override fun render(batch: SpriteBatch, coordinates: Vector2) {
         field.forEachIndexed { i, row ->
             row.forEachIndexed { j, tile ->
-                tile.render(batch, i.toFloat() * tile.originalWidth, j.toFloat() * tile.originalHeight)
+                tile.render(batch, Vector2(i.toFloat() * tile.originalWidth, j.toFloat() * tile.originalHeight))
             }
         }
     }
 
-    fun renderHealthBar(batch: SpriteBatch, x: Float, y: Float) {
-        base.render(batch, x, y)
+    fun renderHealthBar(batch: SpriteBatch, coordinates: Vector2) {
+        base.render(batch, coordinates)
     }
 
     override fun dispose() {
@@ -42,14 +42,16 @@ class Map(
         base.dispose()
     }
 
-    fun getTile(x: Float, y: Float): Tile {
-        return field[x.toInt() / CommonAtlas.TILE.width][y.toInt() / CommonAtlas.TILE.height]
+    fun getTile(coordinates: Vector2): Tile { // todo
+        return field[coordinates.x.toInt() / TILE_SIZE][coordinates.y.toInt() / TILE_SIZE]
     }
 
-    fun getDirectionOnPath(x: Float, y: Float): Direction {
-        val tile = getTile(x, y)
+    fun getDirectionOnPath(coordinates: Vector2): Direction {
+        if (coordinates.x < 0) return Direction.Right
+        val xIndex = coordinates.x.toInt() / TILE_SIZE
+        val yIndex = coordinates.y.toInt() / TILE_SIZE
         return mapMaker.directionList.find {
-            it.first.x.toInt() == tile.xIndex && it.first.y.toInt() == tile.yIndex
+            it.first.x.toInt() == xIndex && it.first.y.toInt() == yIndex
         }?.second!!
     }
 

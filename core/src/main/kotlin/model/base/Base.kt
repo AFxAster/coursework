@@ -1,13 +1,13 @@
 package model.base
 
-import common.BASE_MAX_HEALTH
+import common.BASE_MAX_HP
 import common.Texture
 
 class Base(
-    private val baseHealthBar: BaseHealthBar
+    private val baseHealthBar: BaseHealthBar = BaseHealthBar()
 ) : Texture by baseHealthBar {
 
-    private val maxHealth = BASE_MAX_HEALTH
+    private val maxHealth = BASE_MAX_HP
     var health = maxHealth
         set(value) {
             baseHealthBar.status = value / maxHealth
