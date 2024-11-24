@@ -2,10 +2,7 @@ package model.enemy
 
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.math.Vector2
-import common.RENDER_TIME
-import common.SCORPION_DEFAULT_DAMAGE
-import common.SCORPION_DEFAULT_MAX_HP
-import common.SCORPION_DEFAULT_SPEED
+import common.*
 import controller.Map
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,14 +11,17 @@ import kotlinx.coroutines.launch
 
 class Scorpion(
     coordinates: Vector2,
-    texture: ScorpionTexture
-) : Enemy(coordinates, texture) {
+    texture: ScorpionTexture,
+    map: Map
+) : Enemy(coordinates, texture, map) {
 
     override val maxHp: Float = SCORPION_DEFAULT_MAX_HP
     override var hp: Float = maxHp
         set(value) {
-            if (value <= 0)
-                movingJob?.cancel()
+            if (value <= 0) {
+                map.base.cash += CASH_FROM_ENEMY
+                stopMoving()
+            }
 
             texture.healthBar.status = value / maxHp
             field = value
@@ -29,7 +29,7 @@ class Scorpion(
     override var speed: Float = SCORPION_DEFAULT_SPEED
     override var damage: Float = SCORPION_DEFAULT_DAMAGE
 
-    override fun startMoving(map: Map) {
+    override fun startMoving() {
         movingJob = CoroutineScope(Dispatchers.Default).launch {
             // todo еще стоит это условие цикла вынести в мапу
             while (lastPoint.x < Gdx.graphics.width && lastPoint.y < Gdx.graphics.height) {
@@ -37,7 +37,7 @@ class Scorpion(
                 moveTo(direction)
                 delay(RENDER_TIME)
             }
-            hp = 0f
+            stopMoving()
             map.base.health -= damage
             Gdx.app.postRunnable {
                 dispose()

@@ -17,7 +17,7 @@ class EndlessLevel(
                 scaleHp = 1f,
                 scaleDamage = 1f
             )
-            val enemies = newWave.getEnemies()
+            val enemies = newWave.getEnemies(map)
             enemies.forEach {
                 emit(it)
                 delay(1000)

@@ -6,7 +6,8 @@ import kotlinx.coroutines.Job
 
 abstract class Enemy(
     val coordinates: Vector2,
-    val texture: EnemyTexture
+    val texture: EnemyTexture,
+    protected val map: Map
 ) : EnemyTexture by texture {
 
     abstract val maxHp: Float
@@ -19,12 +20,12 @@ abstract class Enemy(
 
     val lastPoint = Vector2(coordinates)
     val isAlive: Boolean
-        get() = hp > 0
+        get() = hp > 0 && movingJob?.isActive == true
     protected var movingJob: Job? = null
 
     protected abstract fun moveTo(direction: Direction)
 
-    abstract fun startMoving(map: Map)
+    abstract fun startMoving()
 
     fun stopMoving() {
         movingJob?.cancel()

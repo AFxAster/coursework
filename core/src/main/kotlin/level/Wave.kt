@@ -2,6 +2,7 @@ package level
 
 import com.badlogic.gdx.math.Vector2
 import common.TILE_SIZE
+import controller.Map
 import model.enemy.Direction
 import model.enemy.Enemy
 import model.enemy.Scorpion
@@ -13,12 +14,13 @@ class Wave(
     val scaleHp: Float,
     val scaleDamage: Float
 ) {
-    fun getEnemies(): List<Enemy> {
+    fun getEnemies(map: Map): List<Enemy> {
         val enemies = mutableListOf<Enemy>()
         repeat(amount) {
             val enemy = Scorpion(
                 Vector2((startPoint.x - 1) * TILE_SIZE, startPoint.y * TILE_SIZE),
-                ScorpionTexture(Direction.Right)
+                ScorpionTexture(Direction.Right),
+                map
             ).apply {
                 hp *= scaleHp
                 damage *= scaleDamage

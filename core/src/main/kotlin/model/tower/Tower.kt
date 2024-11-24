@@ -17,6 +17,10 @@ abstract class Tower(
     abstract var attackSpeed: Float
     abstract var radius: Float
 
+    var damageLevel = 1
+    var attackSpeedLevel = 1
+    var radiusLevel = 1
+
     abstract val damageMultiplier: Float
     abstract val attackSpeedMultiplier: Float
     abstract val radiusMultiplier: Float
@@ -28,9 +32,20 @@ abstract class Tower(
     }
     fun applyModifier(modifier: Modifier) {
         when (modifier) {
-            is Modifier.Attack -> damage *= damageMultiplier
-            is Modifier.AttackSpeed -> attackSpeed *= attackSpeedMultiplier
-            is Modifier.Range -> radius *= radiusMultiplier
+            is Modifier.Attack -> {
+                damage *= damageMultiplier
+                damageLevel++
+            }
+
+            is Modifier.AttackSpeed -> {
+                attackSpeed *= attackSpeedMultiplier
+                attackSpeedLevel++
+            }
+
+            is Modifier.Range -> {
+                radius *= radiusMultiplier
+                radiusLevel++
+            }
         }
     }
 }

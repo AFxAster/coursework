@@ -41,6 +41,7 @@ class BasicTower(
             field = value
         }
 
+
     override val damageMultiplier: Float = BASIC_TOWER_DEFAULT_DAMAGE_MULTIPLIER
     override val attackSpeedMultiplier: Float = BASIC_TOWER_DEFAULT_ATTACK_SPEED_MULTIPLIER
     override val radiusMultiplier: Float = BASIC_TOWER_DEFAULT_RADIUS_MULTIPLIER

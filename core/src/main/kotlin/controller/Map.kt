@@ -31,10 +31,6 @@ class Map(
         }
     }
 
-    fun renderHealthBar(batch: SpriteBatch, coordinates: Vector2) {
-        base.render(batch, coordinates)
-    }
-
     override fun dispose() {
         field.forEach { row ->
             row.forEach { it.dispose() } // todo может достаточно одну текстуру освободить чем в каждой клетке

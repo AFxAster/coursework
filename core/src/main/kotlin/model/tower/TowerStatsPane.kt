@@ -1,3 +1,6 @@
+package model.tower
+
+import GDXTexture
 import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.Pixmap
 import com.badlogic.gdx.graphics.g2d.BitmapFont
@@ -39,7 +42,7 @@ class TowerStatsPane {
         add(radiusLabel)
     }
 
-    fun updateStats(damage: Float = 0f, attackSpeed: Float = 0f, radius: Float = 0f) {
+    fun updateStats(damage: Float, attackSpeed: Float, radius: Float) {
         damageLabel.setText("${BigDecimal(damage.toDouble()).setScale(2, RoundingMode.HALF_EVEN)}")
         attackSpeedLabel.setText("${BigDecimal(attackSpeed.toDouble()).setScale(2, RoundingMode.HALF_EVEN)}")
         radiusLabel.setText("${BigDecimal(radius.toDouble()).setScale(2, RoundingMode.HALF_EVEN)}")
