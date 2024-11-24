@@ -19,8 +19,8 @@ class Map(
     override val originalHeight: Int = COLUMNS_SIZE * TILE_SIZE
     override val textureCenter = Vector2(originalWidth / 2f, originalHeight / 2f)
 
-    private val mapMaker = MapMaker()
-    private val field: List<List<Tile>> = createField()
+    private var mapMaker = MapMaker()
+    private var field: List<List<Tile>> = createField()
     val firstPathCoords: Vector2 = mapMaker.firstPathCoords
 
     override fun render(batch: SpriteBatch, coordinates: Vector2) {
@@ -63,4 +63,9 @@ class Map(
         }
     }
 
+    fun reset() {
+        mapMaker = MapMaker()
+        field = createField()
+        firstPathCoords.set(mapMaker.firstPathCoords)
+    }
 }

@@ -1,6 +1,8 @@
 package controller
 
+import GameInputAdapter
 import GameOverScreen
+import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.math.Vector2
 import com.badlogic.gdx.scenes.scene2d.Stage
@@ -25,7 +27,8 @@ class GameController {
     private val projectileController = ProjectileController()
     private val towerController = TowerController(enemyController, projectileController)
     private val endlessLevel = EndlessLevel(map)
-    private val gameOverScreen = GameOverScreen()
+    private val gameOverScreen = GameOverScreen(this)
+    private val inputAdapter = GameInputAdapter(this)
 
     private val modifierPane = ModifierPane()
     private val towerStatsPane = TowerStatsPane()
@@ -41,9 +44,11 @@ class GameController {
         bottomStage.addActor(towerStatsPane.group)
 
         topStage.addActor(cashPane.group)
+
+        newGame()
     }
 
-    fun startWaves() {
+    private fun startWaves() {
         wavesJob = CoroutineScope(Dispatchers.Default).launch {
             while (true) {
                 endlessLevel.getEnemies().collect {
@@ -111,12 +116,26 @@ class GameController {
             towerController.stopAttacking()
             enemyController.stopMoving()
             projectileController.stopMoving()
+            gameOverScreen.init()
             gameOverScreen.render(batch, Vector2(0f, 0f))
             // todo и может менять инпутадаптер чтобы кликалось только на нужную кнопку
         }
     }
 
+    fun newGame() {
+        base.cash = INITIAL_CASH
+        base.health = BASE_MAX_HP
+        wavesJob?.cancel()
+        map.reset()
+        enemyController.clear()
+        projectileController.clear()
+        towerController.clear()
+        Gdx.input.inputProcessor = inputAdapter
+        startWaves()
+    }
+
     fun dispose() {
         towerController.dispose()
+        projectileController.dispose()
     }
 }

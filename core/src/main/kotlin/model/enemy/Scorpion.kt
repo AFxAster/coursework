@@ -20,6 +20,7 @@ class Scorpion(
         set(value) {
             if (value <= 0) {
                 map.base.cash += CASH_FROM_ENEMY
+                isAlive = false
                 stopMoving()
             }
 
@@ -38,6 +39,7 @@ class Scorpion(
                 delay(RENDER_TIME)
             }
             stopMoving()
+            isAlive = false
             map.base.health -= damage
             Gdx.app.postRunnable {
                 dispose()

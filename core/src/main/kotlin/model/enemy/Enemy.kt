@@ -19,8 +19,7 @@ abstract class Enemy(
         get() = Vector2(coordinates.x + textureCenter.x, coordinates.y + textureCenter.y)
 
     val lastPoint = Vector2(coordinates)
-    val isAlive: Boolean
-        get() = hp > 0 && movingJob?.isActive == true
+    var isAlive: Boolean = true
     protected var movingJob: Job? = null
 
     protected abstract fun moveTo(direction: Direction)

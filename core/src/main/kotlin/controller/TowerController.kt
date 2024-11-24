@@ -53,6 +53,12 @@ class TowerController(
     fun dispose() {
         towers.forEach { it.dispose() }
     }
+
+    fun clear() {
+        stopAttacking()
+        towers.clear()
+        removeSelect()
+    }
 }
 
 private fun MutableList<Tower>.addSorted(tower: Tower) {

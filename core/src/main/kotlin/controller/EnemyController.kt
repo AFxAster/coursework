@@ -30,11 +30,17 @@ class EnemyController {
     }
 
     private fun update() {
-        enemies.removeAll { !it.isAlive }
+        enemies.removeAll {
+            !it.isAlive
+        }
     }
 
     fun stopMoving() {
         enemies.forEach { it.stopMoving() }
     }
 
+    fun clear() {
+        stopMoving()
+        enemies.clear()
+    }
 }

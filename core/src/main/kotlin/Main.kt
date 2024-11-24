@@ -3,7 +3,6 @@ import atlas.EnemyAtlas
 import atlas.ProjectileAtlas
 import atlas.TowerAtlas
 import com.badlogic.gdx.ApplicationAdapter
-import com.badlogic.gdx.Gdx
 import com.badlogic.gdx.graphics.g2d.SpriteBatch
 import com.badlogic.gdx.utils.ScreenUtils
 import controller.GameController
@@ -19,8 +18,6 @@ class Main : ApplicationAdapter() {
         TowerAtlas.init()
         EnemyAtlas.init()
         ProjectileAtlas.init()
-        Gdx.input.inputProcessor = InputAdapterImpl(controller)
-        controller.startWaves()
     }
 
     override fun render() {

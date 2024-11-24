@@ -2,7 +2,6 @@ package common
 
 import com.badlogic.gdx.graphics.Color
 
-//val scale: Float = 1f
 const val TILE_SIZE: Int = 64
 const val ROWS_SIZE = 14
 const val COLUMNS_SIZE = 14
@@ -15,6 +14,7 @@ const val BASE_MAX_HP = 200f
 val TOWER_RADIUS_COLOR = Color(40 / 255f, 210 / 255f, 255 / 255f, 0.40f)
 val MODIFIER_PANE_BACKGROUND_COLOR = Color(250 / 255f, 160 / 255f, 60 / 255f, 0.80f)
 val TOP_PANE_BACKGROUND_COLOR = Color(50 / 255f, 50 / 255f, 50 / 255f, 0.80f)
+val NEW_GAME_BUTTON_COLOR = Color(80 / 255f, 75 / 255f, 120 / 255f, 0.80f)
 
 const val BASIC_TOWER_DEFAULT_DAMAGE = 50f
 const val BASIC_TOWER_DEFAULT_ATTACK_SPEED = 0.5f
