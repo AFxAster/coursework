@@ -28,7 +28,6 @@ class Main : ApplicationAdapter() {
         batch.begin()
         controller.render(batch)
         batch.end()
-
     }
 
     override fun dispose() {

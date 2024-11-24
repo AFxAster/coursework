@@ -1,3 +1,5 @@
+package level
+
 import com.badlogic.gdx.math.Vector2
 import common.TILE_SIZE
 import model.enemy.Direction
@@ -23,7 +25,6 @@ class Wave(
             }
             enemies.add(enemy)
         }
-        println(enemies)
         return enemies
     }
 }

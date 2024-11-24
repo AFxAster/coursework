@@ -17,6 +17,11 @@ class BasicTowerTexture : TowerTexture {
     private var radiusTexture: GDXTexture = GDXTexture(Pixmap(0, 0, Pixmap.Format.RGBA8888))
 
     private val animation: Animation<TextureRegion> = TowerAtlas.BASIC_TOWER_ANIMATION
+    override var animationDuration: Float = animation.animationDuration
+        set(value) {
+            animation.frameDuration = value / animation.keyFrames.size
+            field = value
+        }
     override var playAnimation: Boolean = false
     private var stateTime = 0f
 
@@ -32,7 +37,7 @@ class BasicTowerTexture : TowerTexture {
 
 
     private var rotation: Float = 0f
-    var radius: Float = 0f
+    override var textureRadius: Float = 0f
         set(radius) {
             val pixmap = Pixmap((radius * 2).toInt(), (radius * 2).toInt(), Pixmap.Format.RGBA8888)
             pixmap.setColor(TOWER_RADIUS_COLOR)
@@ -67,7 +72,11 @@ class BasicTowerTexture : TowerTexture {
     }
 
     override fun renderRadius(batch: SpriteBatch, coordinates: Vector2) {
-        batch.draw(radiusTexture, coordinates.x + textureCenter.x - radius, coordinates.y + textureCenter.y - radius)
+        batch.draw(
+            radiusTexture,
+            coordinates.x + textureCenter.x - textureRadius,
+            coordinates.y + textureCenter.y - textureRadius
+        )
     }
 
     override fun rotateTo(to: Vector2) {

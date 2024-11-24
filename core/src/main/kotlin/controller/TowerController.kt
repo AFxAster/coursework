@@ -5,13 +5,14 @@ import common.TILE_SIZE
 import common.plus
 import model.enemy.Enemy
 import model.tower.Tower
+import modifier.Modifier
 
 class TowerController(
     private val enemyController: EnemyController,
     private val projectileController: ProjectileController
 ) {
     private val towers: MutableList<Tower> = mutableListOf()
-    private var selectedTower: Tower? = null
+    var selectedTower: Tower? = null
 
     fun addTower(tower: Tower) {
         towers.addSorted(tower)
@@ -19,7 +20,7 @@ class TowerController(
 
     fun render(batch: SpriteBatch) {
         selectedTower?.let {
-            it.texture.renderRadius(batch, it.coordinates)
+            it.renderRadius(batch, it.coordinates)
         }
         towers.forEach {
             it.targets = getTargetsTo(it)
@@ -30,6 +31,10 @@ class TowerController(
 
     fun stopAttacking() {
         towers.forEach { it.stopAttacking() }
+    }
+
+    fun applyModifierToSelected(modifier: Modifier) {
+        selectedTower?.applyModifier(modifier)
     }
 
     fun selectTower(xIndex: Int, yIndex: Int) {

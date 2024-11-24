@@ -8,7 +8,7 @@ class InputAdapterImpl(
 ) : InputAdapter() {
 
     override fun touchUp(screenX: Int, screenY: Int, pointer: Int, button: Int): Boolean {
-        controller.selectTile(Vector2(screenX.toFloat(), SCREEN_HEIGHT - screenY.toFloat()))
+        controller.onClick(Vector2(screenX.toFloat(), SCREEN_HEIGHT - screenY.toFloat()))
         return false
     }
 }

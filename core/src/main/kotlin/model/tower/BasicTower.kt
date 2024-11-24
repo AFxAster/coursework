@@ -17,7 +17,6 @@ class BasicTower(
     towerTexture: BasicTowerTexture,
 ) : Tower(coordinates, towerTexture) {
 
-    // todo если делать rxJava то можно это наблюдать и радиус, то обсервером будет текстура
     override var targets: List<Enemy> = emptyList()
         set(value) {
             field = value
@@ -30,12 +29,24 @@ class BasicTower(
                 texture.playAnimation = false
             }
         }
-    override var radius: Float = BASIC_TOWER_DEFAULT_RADIUS
-    override var attackSpeed: Float = BASIC_TOWER_DEFAULT_ATTACK_SPEED
     override var damage: Float = BASIC_TOWER_DEFAULT_DAMAGE
+    override var attackSpeed: Float = BASIC_TOWER_DEFAULT_ATTACK_SPEED
+        set(value) {
+            texture.animationDuration = 1 / attackSpeed
+            field = value
+        }
+    override var radius: Float = BASIC_TOWER_DEFAULT_RADIUS
+        set(value) {
+            texture.textureRadius = value
+            field = value
+        }
+
+    override val damageMultiplier: Float = BASIC_TOWER_DEFAULT_DAMAGE_MULTIPLIER
+    override val attackSpeedMultiplier: Float = BASIC_TOWER_DEFAULT_ATTACK_SPEED_MULTIPLIER
+    override val radiusMultiplier: Float = BASIC_TOWER_DEFAULT_RADIUS_MULTIPLIER
 
     init {
-        towerTexture.radius = radius
+        towerTexture.textureRadius = radius
     }
 
     override fun startAttacking(projectileController: ProjectileController) {
