@@ -1,4 +1,4 @@
-package model.tower
+package pane
 
 import GDXTexture
 import com.badlogic.gdx.Gdx

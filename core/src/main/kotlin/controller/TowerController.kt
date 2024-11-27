@@ -5,7 +5,6 @@ import common.TILE_SIZE
 import common.plus
 import model.enemy.Enemy
 import model.tower.Tower
-import modifier.Modifier
 
 class TowerController(
     private val enemyController: EnemyController,
@@ -13,6 +12,7 @@ class TowerController(
 ) {
     private val towers: MutableList<Tower> = mutableListOf()
     var selectedTower: Tower? = null
+        private set
 
     fun addTower(tower: Tower) {
         towers.addSorted(tower)
@@ -31,10 +31,6 @@ class TowerController(
 
     fun stopAttacking() {
         towers.forEach { it.stopAttacking() }
-    }
-
-    fun applyModifierToSelected(modifier: Modifier) {
-        selectedTower?.applyModifier(modifier)
     }
 
     fun selectTower(xIndex: Int, yIndex: Int) {

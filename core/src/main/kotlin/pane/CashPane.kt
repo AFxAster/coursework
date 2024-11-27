@@ -1,4 +1,4 @@
-package model.base
+package pane
 
 import GDXTexture
 import atlas.CommonAtlas

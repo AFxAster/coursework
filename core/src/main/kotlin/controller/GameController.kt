@@ -10,18 +10,17 @@ import common.*
 import kotlinx.coroutines.*
 import level.EndlessLevel
 import model.base.Base
-import model.base.CashPane
 import model.tile.TileState
-import model.tower.BasicTower
-import model.tower.BasicTowerTexture
-import model.tower.TowerStatsPane
-import modifier.ModifierPane
+import pane.CashPane
+import pane.ModifierPane
+import pane.TowerSelectPane
+import pane.TowerStatsPane
 import kotlin.math.pow
 import kotlin.math.roundToInt
 
 class GameController {
     private val cashPane = CashPane()
-    private val base = Base(cashPane = cashPane)
+    private val base = Base(cashPane)
     private val map = Map(base)
     private val enemyController = EnemyController()
     private val projectileController = ProjectileController()
@@ -34,7 +33,12 @@ class GameController {
     private val towerStatsPane = TowerStatsPane()
     private val bottomStage = Stage()
 
+    private val towerSelectPane = TowerSelectPane()
+    private var isTowerSelectPaneActive = false
+
+
     private val topStage = Stage()
+
     private var wavesJob: Job? = null
 
     init {
@@ -61,18 +65,27 @@ class GameController {
     }
 
     fun onClick(coordinates: Vector2) {
+        map.removeSelect()
         if (towerController.selectedTower != null && modifierPane.isClickInside(coordinates)) {
-            towerController.selectedTower?.let {
-                val modifier = modifierPane.getClickedModifier(
-                    coordinates - Vector2(
-                        SCREEN_WIDTH.toFloat() - modifierPane.group.width,
-                        0f
-                    )
-                )!!
-                val cost = modifierPane.getCostOf(modifier)
+            towerController.selectedTower?.let { selectedTower ->
+                val modifier = modifierPane.getClickedModifier(coordinates)
+                modifier?.let {
+                    val cost = modifierPane.getCostOf(modifier)
+                    if (base.cash >= cost) {
+                        base.cash -= cost
+                        selectedTower.applyModifier(modifier)
+                    }
+                }
+            }
+        } else if (isTowerSelectPaneActive && towerSelectPane.isClickInside(coordinates)) {
+            val tower = towerSelectPane.getClickedTower(coordinates)
+            tower?.let {
+                val cost = towerSelectPane.getCostOf(tower)
                 if (base.cash >= cost) {
                     base.cash -= cost
-                    it.applyModifier(modifier)
+                    towerController.addTower(tower)
+                    map.getTile(tower.coordinates).state = TileState.Occupied
+                    isTowerSelectPaneActive = false
                 }
             }
         } else
@@ -82,14 +95,16 @@ class GameController {
     private fun selectTile(coordinates: Vector2) {
         val tile = map.getTile(coordinates)
         towerController.removeSelect()
+        isTowerSelectPaneActive = false
         if (tile.state is TileState.Empty) {
-
-            val tower = BasicTower(
-                Vector2(tile.xIndex * TILE_SIZE.toFloat(), tile.yIndex * TILE_SIZE.toFloat()),
-                BasicTowerTexture()
+            towerSelectPane.updateCoordinates(
+                Vector2(
+                    tile.xIndex * TILE_SIZE.toFloat(),
+                    tile.yIndex * TILE_SIZE.toFloat()
+                )
             )
-            towerController.addTower(tower)
-            tile.state = TileState.Occupied
+            isTowerSelectPaneActive = true
+            map.selectTile(coordinates)
         } else if (tile.state is TileState.Occupied) {
             towerController.selectTower(tile.xIndex, tile.yIndex)
         }
@@ -111,6 +126,9 @@ class GameController {
             bottomStage.draw()
         }
         topStage.draw()
+        if (isTowerSelectPaneActive) {
+            towerSelectPane.group.draw(batch, 1f)
+        }
         if (!base.isAlive) {
             wavesJob?.cancel()
             towerController.stopAttacking()
@@ -118,7 +136,6 @@ class GameController {
             projectileController.stopMoving()
             gameOverScreen.init()
             gameOverScreen.render(batch, Vector2(0f, 0f))
-            // todo и может менять инпутадаптер чтобы кликалось только на нужную кнопку
         }
     }
 

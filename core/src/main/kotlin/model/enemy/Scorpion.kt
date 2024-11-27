@@ -38,9 +38,9 @@ class Scorpion(
                 moveTo(direction)
                 delay(RENDER_TIME)
             }
-            stopMoving()
-            isAlive = false
             map.base.health -= damage
+            isAlive = false
+            stopMoving()
             Gdx.app.postRunnable {
                 dispose()
             }

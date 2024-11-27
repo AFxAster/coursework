@@ -38,7 +38,8 @@ class Arrow(
                 targetCoordinates.set(target.center)
             }
             this@Arrow.isActive = false
-            target.hp -= damage // todo может использовать атомарные, потокобезопасные струкутуры
+            if (target.isAlive)
+                target.hp -= damage // todo может использовать атомарные, потокобезопасные струкутуры
 //            println("end of moving $targetCoordinates.x $targetCoordinates.y")
             // todo dispose() вызывать или нет???
         }

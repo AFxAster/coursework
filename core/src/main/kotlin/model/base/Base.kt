@@ -3,10 +3,11 @@ package model.base
 import common.BASE_MAX_HP
 import common.INITIAL_CASH
 import common.Texture
+import pane.CashPane
 
 class Base(
-    private val baseHealthBar: BaseHealthBar = BaseHealthBar(),
-    private val cashPane: CashPane
+    private val cashPane: CashPane,
+    private val baseHealthBar: BaseHealthBar = BaseHealthBar()
 ) : Texture by baseHealthBar {
 
     private val maxHealth = BASE_MAX_HP

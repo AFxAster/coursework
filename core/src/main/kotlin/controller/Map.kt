@@ -23,6 +23,8 @@ class Map(
     private var field: List<List<Tile>> = createField()
     val firstPathCoords: Vector2 = mapMaker.firstPathCoords
 
+    private var selectedTile: Tile? = null
+
     override fun render(batch: SpriteBatch, coordinates: Vector2) {
         field.forEachIndexed { i, row ->
             row.forEachIndexed { j, tile ->
@@ -61,6 +63,18 @@ class Map(
                     Tile(TileState.Empty, i, j)
             }
         }
+    }
+
+    fun selectTile(coordinates: Vector2) {
+        selectedTile = getTile(coordinates)
+        selectedTile?.isActive = true
+        println(selectedTile)
+    }
+
+    fun removeSelect() {
+        println(selectedTile)
+        selectedTile?.isActive = false
+        selectedTile = null
     }
 
     fun reset() {

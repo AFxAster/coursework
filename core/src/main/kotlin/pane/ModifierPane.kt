@@ -1,4 +1,4 @@
-package modifier
+package pane
 
 import GDXTexture
 import atlas.ModifierAtlas
@@ -12,6 +12,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Label
 import com.badlogic.gdx.scenes.scene2d.ui.Table
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable
 import common.*
+import modifier.Modifier
 
 class ModifierPane {
     private val padding = 5f
@@ -46,13 +47,17 @@ class ModifierPane {
     }
 
     fun getClickedModifier(coordinates: Vector2): Modifier? {
-        if (coordinates.y <= group.padY / 2 || coordinates.y >= group.height - padding) return null
+        val coordinatesInPane = coordinates - Vector2(
+            SCREEN_WIDTH.toFloat() - group.width,
+            0f
+        )
+        if (coordinatesInPane.y <= padding || coordinatesInPane.y >= group.height - padding) return null
         var x = 0f
         group.children.forEach {
             x += padding
-            if (coordinates.x <= x) return null
+            if (coordinatesInPane.x <= x) return null
             x += it.width
-            if (coordinates.x <= x) return it.zIndex.toModifier()
+            if (coordinatesInPane.x <= x) return it.zIndex.toModifier()
         }
         return null
     }
@@ -92,4 +97,3 @@ private fun Int.toModifier(): Modifier? {
         else -> null
     }
 }
-
